@@ -35,6 +35,7 @@ export const saveDocument = createServerFn({ method: "POST" })
         description: z.string().trim().max(2000),
         path: z.string().min(1).max(400),
         size: z.number().int().nonnegative(),
+        links: z.array(z.string().trim().url().max(1000)).min(1).max(50),
       })
       .parse(d),
   )
@@ -46,6 +47,7 @@ export const saveDocument = createServerFn({ method: "POST" })
       description: data.description,
       file_path: data.path,
       file_size: data.size,
+      verify_links: data.links,
     });
     if (error) throw new Error(error.message);
     return { ok: true };
