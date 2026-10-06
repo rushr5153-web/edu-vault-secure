@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { BookOpen, Download, FileText, Lock, ShieldCheck, Upload } from "lucide-react";
+import { BookOpen, Download, FileText, Lock, Plus, ShieldCheck, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { createUploadUrl, saveDocument, getDownloadUrl } from "@/lib/docs.functions";
 import { Button } from "@/components/ui/button";
@@ -18,16 +18,16 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
-const AD_LINK =
-  "https://www.profitableratecpmnetwork.com/id0znyyqq?key=ba1509e59bb6ca1813723f7d0b9dda32";
+const DEFAULT_LINK =
+  "https://www.profitableratecpmnetwork.com/cpgaddw7?key=ddbfb91c13448cc07c5caad4e88b8beb";
 const WAIT_SECONDS = 30;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vidya PDF Library — අධ්‍යාපනික PDF" },
+      { title: "Edu Share Hub — අධ්‍යාපනික PDF" },
       { name: "description", content: "Notes, past papers සහ අධ්‍යාපනික PDF නොමිලේ download කරගන්න." },
-      { property: "og:title", content: "Vidya PDF Library" },
+      { property: "og:title", content: "Edu Share Hub" },
       { property: "og:description", content: "අධ්‍යාපනික PDF නොමිලේ download කරගන්න." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -41,6 +41,7 @@ type Doc = {
   title: string;
   description: string;
   file_size: number;
+  verify_links: string[];
   created_at: string;
 };
 
@@ -50,7 +51,7 @@ function Index() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("documents")
-        .select("id,title,description,file_size,created_at")
+        .select("id,title,description,file_size,verify_links,created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Doc[];
@@ -63,7 +64,7 @@ function Index() {
       <header className="bg-hero text-primary-foreground">
         <div className="mx-auto max-w-5xl px-5 py-14 md:py-20">
           <div className="flex items-center gap-2 text-sm opacity-90">
-            <BookOpen className="h-4 w-4" /> Vidya PDF Library
+            <BookOpen className="h-4 w-4" /> Edu Share Hub
           </div>
           <h1 className="font-display mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
             ඉගෙනීමට අවශ්‍ය <span className="text-accent">PDF</span> එකම තැනක
@@ -107,9 +108,12 @@ function DocCard({ doc }: { doc: Doc }) {
   }, [seconds]);
 
   const unlocked = seconds === 0;
+  const [linkIdx, setLinkIdx] = useState(0);
 
   function verify() {
-    window.open(AD_LINK, "_blank", "noopener");
+    const list = doc.verify_links?.length ? doc.verify_links : [DEFAULT_LINK];
+    window.open(list[linkIdx % list.length], "_blank", "noopener");
+    setLinkIdx((i) => i + 1);
     setSeconds(WAIT_SECONDS);
   }
 
@@ -167,6 +171,7 @@ function UploadDialog() {
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [links, setLinks] = useState<string[]>([DEFAULT_LINK]);
   const qc = useQueryClient();
   const getUploadUrl = useServerFn(createUploadUrl);
   const save = useServerFn(saveDocument);
@@ -188,12 +193,14 @@ function UploadDialog() {
         .from("pdfs")
         .uploadToSignedUrl(path, token, file, { contentType: "application/pdf" });
       if (error) throw error;
-      await save({ data: { password, title, description, path, size: file.size } });
+      const cleanLinks = links.map((l) => l.trim()).filter(Boolean);
+      await save({ data: { password, title, description, path, size: file.size, links: cleanLinks } });
       toast.success("Upload සාර්ථකයි!");
       setTitle("");
       setDescription("");
       setFile(null);
       setPassword("");
+      setLinks([DEFAULT_LINK]);
       setOpen(false);
       qc.invalidateQueries({ queryKey: ["documents"] });
     } catch (err) {
@@ -224,6 +231,28 @@ function UploadDialog() {
             rows={4}
           />
           <Input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} required />
+          <div className="space-y-2">
+            <p className="text-sm font-semibold">Verify direct links</p>
+            {links.map((l, i) => (
+              <div key={i} className="flex gap-2">
+                <Input
+                  type="url"
+                  placeholder="https://..."
+                  value={l}
+                  disabled={i === 0}
+                  onChange={(e) => setLinks(links.map((x, j) => (j === i ? e.target.value : x)))}
+                />
+                {i > 0 && (
+                  <Button type="button" variant="outline" size="icon" onClick={() => setLinks(links.filter((_, j) => j !== i))}>
+                    <X />
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => setLinks([...links, ""])}>
+              <Plus /> Link එකක් එකතු කරන්න
+            </Button>
+          </div>
           <Input
             type="password"
             placeholder="Admin password"

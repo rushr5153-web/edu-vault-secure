@@ -1,0 +1,1 @@
+ALTER TABLE public.documents ADD COLUMN verify_links TEXT[] NOT NULL DEFAULT '{}';

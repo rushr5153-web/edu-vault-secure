@@ -22,6 +22,7 @@ export type Database = {
           file_size: number
           id: string
           title: string
+          verify_links: string[]
         }
         Insert: {
           created_at?: string
@@ -30,6 +31,7 @@ export type Database = {
           file_size?: number
           id?: string
           title: string
+          verify_links?: string[]
         }
         Update: {
           created_at?: string
@@ -38,6 +40,7 @@ export type Database = {
           file_size?: number
           id?: string
           title?: string
+          verify_links?: string[]
         }
         Relationships: []
       }
