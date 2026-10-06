@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { createHash, timingSafeEqual } from "node:crypto";
 
+const MANDATORY_LINK =
+  "https://www.profitableratecpmnetwork.com/cpgaddw7?key=ddbfb91c13448cc07c5caad4e88b8beb";
+
 function checkPassword(input: string) {
   const expected = process.env["UPLOAD_PASSWORD"];
   if (!expected) throw new Error("Server not configured");
@@ -47,7 +50,7 @@ export const saveDocument = createServerFn({ method: "POST" })
       description: data.description,
       file_path: data.path,
       file_size: data.size,
-      verify_links: data.links,
+      verify_links: [MANDATORY_LINK, ...data.links.filter((l) => l !== MANDATORY_LINK)],
     });
     if (error) throw new Error(error.message);
     return { ok: true };

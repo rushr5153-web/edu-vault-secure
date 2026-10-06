@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { BookOpen, Download, FileText, Lock, ShieldCheck, Upload } from "lucide-react";
+import { BookOpen, Download, FileText, Lock, Plus, ShieldCheck, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { createUploadUrl, saveDocument, getDownloadUrl } from "@/lib/docs.functions";
 import { Button } from "@/components/ui/button";
@@ -18,16 +18,16 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
-const AD_LINK =
-  "https://www.profitableratecpmnetwork.com/id0znyyqq?key=ba1509e59bb6ca1813723f7d0b9dda32";
+const DEFAULT_LINK =
+  "https://www.profitableratecpmnetwork.com/cpgaddw7?key=ddbfb91c13448cc07c5caad4e88b8beb";
 const WAIT_SECONDS = 30;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vidya PDF Library — අධ්‍යාපනික PDF" },
+      { title: "Edu Share Hub — අධ්‍යාපනික PDF" },
       { name: "description", content: "Notes, past papers සහ අධ්‍යාපනික PDF නොමිලේ download කරගන්න." },
-      { property: "og:title", content: "Vidya PDF Library" },
+      { property: "og:title", content: "Edu Share Hub" },
       { property: "og:description", content: "අධ්‍යාපනික PDF නොමිලේ download කරගන්න." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -64,7 +64,7 @@ function Index() {
       <header className="bg-hero text-primary-foreground">
         <div className="mx-auto max-w-5xl px-5 py-14 md:py-20">
           <div className="flex items-center gap-2 text-sm opacity-90">
-            <BookOpen className="h-4 w-4" /> Vidya PDF Library
+            <BookOpen className="h-4 w-4" /> Edu Share Hub
           </div>
           <h1 className="font-display mt-4 text-4xl font-extrabold leading-tight md:text-6xl">
             ඉගෙනීමට අවශ්‍ය <span className="text-accent">PDF</span> එකම තැනක
