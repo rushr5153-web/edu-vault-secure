@@ -26,3 +26,21 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+---
+
+## GitHub + Netlify Deploy Guide
+
+### 1. GitHub එකට upload කරන්න
+Lovable editor එකේ **+ menu → GitHub → Connect project** ඔබලා repository එකක් හදන්න. ඊට පස්සේ changes ඔක්කොම auto-sync වෙනවා.
+
+### 2. Netlify එකට connect කරන්න
+1. [app.netlify.com](https://app.netlify.com) → **Add new site → Import an existing project → GitHub** තෝරන්න.
+2. Repository එක select කරන්න. Build settings `netlify.toml` එකෙන් auto-fill වෙනවා.
+3. **Site settings → Environment variables** වලට මේවා add කරන්න:
+   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID`
+   - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (upload/download server functions වලට අවශ්‍යයි)
+   - `UPLOAD_PASSWORD` (admin upload password එක)
+4. **Deploy** ඔබන්න.
+
+> ⚠️ සටහන: PDF upload/download features වැඩ කරන්න `SUPABASE_SERVICE_ROLE_KEY` අවශ්‍යයි. ඒක නැතිව deploy කළොත් site එක open වෙනවා, ඒත් upload/download කැඩෙනවා. සම්පූර්ණ features ඔක්කොම එකට වැඩ කරන විදියට host කරන්න නම් Lovable **Publish** button එක use කරන්න.
