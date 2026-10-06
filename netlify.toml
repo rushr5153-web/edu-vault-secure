@@ -1,0 +1,16 @@
+# Netlify deployment config for Edu Share Hub (TanStack Start + Nitro)
+[build]
+  command = "NITRO_PRESET=netlify npm run build"
+  publish = ".output/public"
+  functions = ".output/server"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Required environment variables — set these in Netlify > Site settings > Environment variables:
+#   VITE_SUPABASE_URL
+#   VITE_SUPABASE_PUBLISHABLE_KEY
+#   VITE_SUPABASE_PROJECT_ID
+#   SUPABASE_URL
+#   SUPABASE_SERVICE_ROLE_KEY   (needed for PDF upload/download server functions)
+#   UPLOAD_PASSWORD             (admin password for PDF uploads)
