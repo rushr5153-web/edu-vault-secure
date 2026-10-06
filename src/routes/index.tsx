@@ -173,8 +173,14 @@ function UploadDialog() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!file) return toast.error("PDF එකක් තෝරන්න");
-    if (file.type !== "application/pdf") return toast.error("PDF files පමණයි");
+    if (!file) {
+      toast.error("PDF එකක් තෝරන්න");
+      return;
+    }
+    if (file.type !== "application/pdf") {
+      toast.error("PDF files පමණයි");
+      return;
+    }
     setBusy(true);
     try {
       const { path, token } = await getUploadUrl({ data: { password, fileName: file.name } });
